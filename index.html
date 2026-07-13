@@ -1,0 +1,38 @@
+
+<!doctype html><html lang="tl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alkansya Tracker</title>
+<style>
+body{margin:0;font-family:system-ui;background:#0f172a;color:#fff;display:flex;justify-content:center;padding:24px}
+.card{width:100%;max-width:720px;background:#111827;border-radius:20px;padding:20px;box-shadow:0 10px 30px #0005}
+input,button{padding:10px;border-radius:10px;border:1px solid #334155;background:#1e293b;color:#fff}
+button{cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:16px}
+td,th{padding:8px;border-bottom:1px solid #334155}
+.bar{height:12px;background:#1e293b;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:#22c55e}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+</style></head><body><div class=card>
+<h2>💰 Alkansya Tracker</h2>
+<div><b>Total: ₱<span id=t>0</span> / ₱10000</b></div>
+<div class=bar><div class=fill id=f></div></div><br>
+<div class=row>
+<input type=date id=d><input type=number id=a placeholder="Halaga">
+<button onclick="add()">Add</button>
+</div>
+<table><thead><tr><th>Date</th><th>Amount</th><th></th></tr></thead><tbody id=tb></tbody></table>
+</div>
+<script>
+let data=JSON.parse(localStorage.getItem('alk')||'[]');
+function save(){localStorage.setItem('alk',JSON.stringify(data));render();}
+function add(){
+ let d=document.getElementById('d').value,a=+document.getElementById('a').value;
+ if(!d||a<=0)return alert('Lagyan ng date at amount.');
+ data.push({d,a}); save(); document.getElementById('a').value='';
+}
+function del(i){data.splice(i,1);save();}
+function render(){
+ let total=0,h='';
+ data.forEach((x,i)=>{total+=x.a;h+=`<tr><td>${x.d}</td><td>₱${x.a}</td><td><button onclick="del(${i})">Delete</button></td></tr>`});
+ tb.innerHTML=h;t.textContent=total;f.style.width=Math.min(total/10000*100,100)+'%';
+}
+render();
+</script></body></html>
